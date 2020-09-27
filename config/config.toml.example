@@ -207,6 +207,7 @@ ignore-error = false
 enable_zero_date = true
 enable_nullable = true
 enable_drop_table = false
+enable_drop_column = false
 enable_set_engine = true
 enable_timestamp_type=true
 enable_change_column = true

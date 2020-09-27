@@ -181,6 +181,7 @@ const (
 	ErrColumnsMustHaveIndexTypeErr
 	ER_PRIMARY_CANT_HAVE_NULL
 	ErrCantRemoveAllFields
+	ErrCantRemoveTableField
 	ErrNotFoundTableInfo
 	ErrNotFoundThreadId
 	ErrNotFoundMasterStatus
@@ -357,6 +358,7 @@ var ErrorsDefault = map[ErrorCode]string{
 	ErrColumnsMustHaveIndexTypeErr:         "The specified column: '%s' type must be '%s',current is '%s'.",
 	ER_PRIMARY_CANT_HAVE_NULL:              "All parts of a PRIMARY KEY must be NOT NULL; if you need NULL in a key, use UNIQUE instead",
 	ErrCantRemoveAllFields:                 "You can't delete all columns with ALTER TABLE; use DROP TABLE instead",
+	ErrCantRemoveTableField:                "You can't drop columns,Please contact DBA",
 	ErrNotFoundTableInfo:                   "Skip backup because there is no table structure information.",
 	ErrNotFoundThreadId:                    "MariaDB v%d not supported yet,please confirm that the rollback sql is correct",
 	ErrNotFoundMasterStatus:                "Can't found master binlog position.",
@@ -533,6 +535,7 @@ var ErrorsChinese = map[ErrorCode]string{
 	ErrColumnsMustHaveIndexTypeErr:         "列: '%s' 类型必须为 '%s',当前为 '%s'",
 	ER_PRIMARY_CANT_HAVE_NULL:              "主键的所有列必须为NOT NULL,如需要NULL列,请改用唯一索引",
 	ErrCantRemoveAllFields:                 "禁止删除表的所有列.",
+	ErrCantRemoveTableField:                "禁止删除列.请联系DBA",
 	ErrNotFoundTableInfo:                   "没有表结构信息,跳过备份.",
 	ErrNotFoundThreadId:                    "MariaDB v%d 对回滚支持不完美,请注意确认回滚语句是否正确",
 	ErrNotFoundMasterStatus:                "无法获取master binlog信息.",
@@ -1008,6 +1011,8 @@ func (e ErrorCode) String() string {
 		return "er_primary_cant_have_null"
 	case ErrCantRemoveAllFields:
 		return "er_cant_remove_all_fields"
+	case ErrCantRemoveTableField:
+		return "er_cant_remove_table_field"
 	case ErrNotFoundTableInfo:
 		return "er_not_found_table_info"
 	case ErrNotFoundThreadId:

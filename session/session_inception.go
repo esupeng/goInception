@@ -833,8 +833,8 @@ func (s *session) checkSqlIsDDL(record *Record) bool {
 
 		*ast.CreateViewStmt,
 
-		// *ast.CreateDatabaseStmt,
-		// *ast.DropDatabaseStmt,
+	// *ast.CreateDatabaseStmt,
+	// *ast.DropDatabaseStmt,
 
 		*ast.CreateIndexStmt,
 		*ast.DropIndexStmt:
@@ -4338,15 +4338,17 @@ func (s *session) checkDropColumn(t *TableInfo, c *ast.AlterTableSpec) {
 		if strings.EqualFold(field.Field, c.OldColumnName.Name.O) && !field.IsDeleted {
 			found = true
 			s.mysqlDropColumnRollback(field)
-
-			if checkExistsColumns(t) > 1 {
-				// 在新的快照上删除字段
-				newTable := s.cacheTableSnapshot(t)
-				(&(newTable.Fields[i])).IsDeleted = true
+			if !s.inc.EnableDropColumn {
+				s.appendErrorNo(ErrCantRemoveTableField)
 			} else {
-				s.appendErrorNo(ErrCantRemoveAllFields)
+				if checkExistsColumns(t) > 1 {
+					// 在新的快照上删除字段
+					newTable := s.cacheTableSnapshot(t)
+					(&(newTable.Fields[i])).IsDeleted = true
+				} else {
+					s.appendErrorNo(ErrCantRemoveAllFields)
+				}
 			}
-
 			break
 		}
 	}
